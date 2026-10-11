@@ -156,14 +156,12 @@
         });
 
         // Smooth scroll to exhibition if result is present
-        {% if artwork and image_url %}
         window.addEventListener('DOMContentLoaded', () => {
             const exhibition = document.getElementById('exhibition-view');
             if (exhibition) {
                 exhibition.scrollIntoView({ behavior: 'smooth' });
             }
         });
-        {% endif %}
     </script>
 </body>
 
