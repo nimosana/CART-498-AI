@@ -70,22 +70,25 @@ Return a JSON object with the following fields:
                 f"The object is displayed on a minimalist white plinth or within a museum vitrine. High resolution architectural photography, art documentation style."
             )
 
-            try:
-                img_resp = client.images.generate(
-                    model="dall-e-3",
-                    prompt=image_prompt,
-                    size="1024x1024",
-                    response_format="b64_json"
-                )
-            except Exception:
-                # Fallback without explicit response_format parameter if not supported
-                img_resp = client.images.generate(
-                    model="dall-e-3",
-                    prompt=image_prompt,
-                    size="1024x1024"
-                )
+            candidate_models = ["gpt-image-1-mini", "gpt-image-1", "chatgpt-image-latest", "dall-e-3"]
+            img_item = None
+            last_img_err = None
 
-            img_item = img_resp.data[0]
+            for img_model in candidate_models:
+                try:
+                    img_resp = client.images.generate(
+                        model=img_model,
+                        prompt=image_prompt
+                    )
+                    img_item = img_resp.data[0]
+                    break
+                except Exception as err:
+                    last_img_err = err
+                    continue
+
+            if img_item is None:
+                raise Exception(f"Image generation failed: {str(last_img_err)}")
+
             if getattr(img_item, "b64_json", None):
                 image_url = f"data:image/png;base64,{img_item.b64_json}"
             elif getattr(img_item, "url", None):
