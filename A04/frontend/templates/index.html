@@ -4,33 +4,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ask me anything</title>
+    <title>Magic Gallery | Contemporary Art Conversion</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
-    <div class="container d-flex justify-content-center">
-        <div class="glass-card text-center">
-            <h1 class="display-5 fw-bold mb-3">Generate an exhibition of your chosen object</h1>
-            <p class="text-muted mb-4">Describe an object and get it exhibited with their label </p>
-            <form method="POST">
-                <div class="mb-3">
-                    <textarea name="prompt" rows="4" class="form-control" placeholder="Describe an object"
-                        required></textarea>
+    <div class="gallery-wrapper">
+        <!-- Header -->
+        <header class="gallery-header">
+            <div class="institution-sub">Pavilion of the Everyday</div>
+            <h1 class="gallery-title">Magic Gallery</h1>
+            <p class="gallery-subtitle">An institutional apparatus for the elevation of ordinary objects into contemporary art.</p>
+        </header>
+
+        <!-- Curatorial Submission Form -->
+        <section class="submission-card">
+            <h2 class="card-title">Submit an Object for Exhibition</h2>
+            <p class="card-instruction">Describe any ordinary, mundane, or discarded object from daily life.</p>
+            
+            <form method="POST" id="curate-form">
+                <div class="input-group">
+                    <textarea 
+                        name="prompt" 
+                        id="prompt-input"
+                        rows="3" 
+                        class="form-control" 
+                        placeholder="e.g., A bent paperclip, a half-eaten bodega bagel, or a scratched metro card..." 
+                        required>{{ user_prompt if user_prompt else '' }}</textarea>
                 </div>
-                <div class="d-grid">
-                    <input type="submit" value="Submit" class="btn btn-primary">
+                
+                <div class="preset-suggestions">
+                    <span class="suggestion-label">Suggested specimens:</span>
+                    <button type="button" class="preset-chip" onclick="setPrompt('A single unmatched wool sock found behind the dryer')">Lost Sock</button>
+                    <button type="button" class="preset-chip" onclick="setPrompt('A lukewarm paper cup of bodega coffee with a smudged lid')">Bodega Coffee</button>
+                    <button type="button" class="preset-chip" onclick="setPrompt('A tangled pair of wired white earbuds with one dead channel')">Tangled Earbuds</button>
+                    <button type="button" class="preset-chip" onclick="setPrompt('An expired transit pass with folded corners and ink stains')">Expired Transit Pass</button>
+                </div>
+
+                <div class="submit-wrap">
+                    <button type="submit" id="submit-btn" class="btn btn-primary">
+                        <span class="btn-text">Curate &amp; Mount Exhibition</span>
+                    </button>
                 </div>
             </form>
 
-            {% if result %}
-            <div class="mt-4 pt-3 border-top">
-                <h5 class="fw-semibold text-start mb-2">Response:</h5>
-                <div class="response-card p-3 shadow-sm">{{ result }}</div>
+            <!-- Loading State Indicator -->
+            <div id="loading-state" class="loading-state hidden">
+                <div class="spinner"></div>
+                <div class="loading-text">
+                    <p class="loading-title">Mounting Exhibition &amp; Consulting Theorists...</p>
+                    <p class="loading-sub">Generating installation documentation and catalog tombstone. This may take a few moments.</p>
+                </div>
             </div>
-            {% endif %}
+        </section>
+
+        <!-- Error Notification -->
+        {% if error %}
+        <div class="alert-box">
+            <strong>Curatorial Notice:</strong> {{ error }}
         </div>
+        {% endif %}
+
+        <!-- Exhibition Result -->
+        {% if artwork and image_url %}
+        <main class="exhibition-space" id="exhibition-view">
+            <div class="exhibition-badge">Currently on View &bull; Gallery Room 4</div>
+            
+            <!-- Installation View / Generated Artwork Image -->
+            <div class="artwork-viewport">
+                <div class="artwork-frame">
+                    <img src="{{ image_url }}" alt="{{ artwork.title }}" class="artwork-image">
+                    <div class="artwork-caption-tag">Installation View</div>
+                </div>
+            </div>
+
+            <!-- Authentic Museum Wall Placard / Tombstone -->
+            <aside class="museum-placard">
+                <div class="placard-inner">
+                    <!-- Tombstone Header: Artist & Bio -->
+                    <div class="tombstone-artist">
+                        <span class="artist-name">{{ artwork.artist_name }}</span>
+                        <span class="artist-bio">{{ artwork.artist_bio }}</span>
+                    </div>
+
+                    <!-- Tombstone Title & Year -->
+                    <div class="tombstone-work">
+                        <span class="work-title">{{ artwork.title }}</span>, 
+                        <span class="work-year">{{ artwork.year }}</span>
+                    </div>
+
+                    <!-- Tombstone Medium -->
+                    <div class="tombstone-line">
+                        <span class="line-label">Medium:</span>
+                        <span class="line-value">{{ artwork.medium }}</span>
+                    </div>
+
+                    <!-- Tombstone Dimensions -->
+                    <div class="tombstone-line">
+                        <span class="line-label">Dimensions:</span>
+                        <span class="line-value">{{ artwork.dimensions }}</span>
+                    </div>
+
+                    <!-- Tombstone Provenance -->
+                    <div class="tombstone-provenance">
+                        <span class="line-label">Provenance:</span>
+                        <span class="provenance-value">{{ artwork.provenance }}</span>
+                    </div>
+
+                    <!-- Tombstone Credit Line -->
+                    <div class="tombstone-credit">
+                        <span class="credit-value">{{ artwork.credit_line }}</span>
+                    </div>
+
+                    <hr class="placard-divider">
+
+                    <!-- Extended Curatorial Label -->
+                    <div class="extended-label">
+                        <p class="extended-label-body">{{ artwork.extended_label }}</p>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="re-curate-action">
+                <a href="#curate-form" class="btn btn-secondary">Submit Another Object</a>
+            </div>
+        </main>
+        {% endif %}
+
+        <!-- Footer -->
+        <footer class="gallery-footer">
+            <p>Magic Gallery &copy; 2026 &bull; Contemporary Art Department &bull; CART-398</p>
+        </footer>
     </div>
+
+    <script>
+        function setPrompt(text) {
+            const input = document.getElementById('prompt-input');
+            input.value = text;
+            input.focus();
+        }
+
+        const form = document.getElementById('curate-form');
+        const loadingState = document.getElementById('loading-state');
+        const submitBtn = document.getElementById('submit-btn');
+
+        form.addEventListener('submit', function() {
+            loadingState.classList.remove('hidden');
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.6';
+            submitBtn.innerHTML = '<span class="btn-text">Curating...</span>';
+        });
+
+        // Smooth scroll to exhibition if result is present
+        {% if artwork and image_url %}
+        window.addEventListener('DOMContentLoaded', () => {
+            const exhibition = document.getElementById('exhibition-view');
+            if (exhibition) {
+                exhibition.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+        {% endif %}
+    </script>
 </body>
 
 </html>
