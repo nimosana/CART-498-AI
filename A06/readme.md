@@ -33,9 +33,15 @@ Install the Blender Lab MCP add-on using the official instructions: https://www.
 - **3.2** Restart Blender and keep it running when testing the connection.
 
 ### Option A
-Use a desktop AI client, such as ChatGPT or Claude Code, and configure the server. 
+Use a desktop AI client, such as ChatGPT or Claude Code, and configure the MCP server in the application's settings. 
 
 ![ChatGPT MCP Setup](imgs/02_chatgpt-set-up.png)
 
 ### Option B
 Configure another local AI client or a different MCP-compatible application. (out of scope for this presentation)
+
+## Demo
+[![Blender MCP bike demo](https://img.youtube.com/vi/eG38Qbcc9TI/0.jpg)](https://youtu.be/eG38Qbcc9TI)
+
+[Blender MCP bike demo](https://youtu.be/eG38Qbcc9TI)
+
