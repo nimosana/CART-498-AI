@@ -42,6 +42,11 @@ Configure another local AI client or a different MCP-compatible application. (ou
 
 ## Demo
 [![Blender MCP bike demo](https://img.youtube.com/vi/eG38Qbcc9TI/0.jpg)](https://youtu.be/eG38Qbcc9TI)
-
 [Blender MCP bike demo](https://youtu.be/eG38Qbcc9TI)
+
+## Result:
+
+## Demo
+[![Blender MCP bike demo](https://img.youtube.com/vi/nAdAzdxA4yI/0.jpg)](https://youtu.be/nAdAzdxA4yI)
+[Blender MCP bike demo](https://youtu.be/nAdAzdxA4yI)
 
